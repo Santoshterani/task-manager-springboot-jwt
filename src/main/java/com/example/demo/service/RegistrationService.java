@@ -18,16 +18,15 @@ public class RegistrationService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private JwtUtil jwtUtil;
 
-    // registration
+    // register
     public User register(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // set default role
         if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
@@ -46,6 +45,8 @@ public class RegistrationService {
             throw new RuntimeException("Invalid password");
         }
 
-        return jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+        Role role = user.getRole() != null ? user.getRole() : Role.USER;
+
+        return jwtUtil.generateToken(user.getUsername(), role.name());
     }
 }
